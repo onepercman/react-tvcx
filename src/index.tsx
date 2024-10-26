@@ -48,7 +48,11 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
 
       const _className = useMemo(
         function () {
-          return cn(variants?.[slot ?? '']?.(), classNames?.[slot], className)
+          return cn(
+            typeof variants === 'string' ? variants : variants?.[slot ?? '']?.(),
+            classNames?.[slot],
+            className
+          )
         },
         [variants, classNames, className, slot]
       )
