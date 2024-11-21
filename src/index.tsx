@@ -58,7 +58,7 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
             className
           )
         },
-        [variants, classNames, className, slot]
+        [variants, classNames, className, slot, unstyled]
       )
 
       return (
@@ -86,7 +86,7 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
             className
           )
         },
-        [variants, classNames, className, slot]
+        [variants, classNames, className, slot, unstyled]
       )
 
       return <Component ref={ref} className={_className} {...(props as any)} />
