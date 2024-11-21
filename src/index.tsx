@@ -22,6 +22,10 @@ export type TVSlotClassNamesProps<TVFN extends Recipe> =
 
 export type ComposedTVProps<TVFN extends Recipe> = VariantProps<TVFN> & TVSlotClassNamesProps<TVFN>
 
+export type UnstyledProps = {
+  unstyled?: boolean
+}
+
 export type CtxClassNames<TVFN extends Recipe> =
   ComposedTVProps<TVFN> extends { classNames: any } ? ComposedTVProps<TVFN>['classNames'] : unknown
 
@@ -42,14 +46,14 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
   function withRoot<C extends React.ElementType>(Component: C, slot?: Slot) {
     const Comp = React.forwardRef<
       React.ElementRef<C>,
-      React.ComponentProps<C> & ComposedTVProps<TVFN>
-    >(function ({ className, classNames, ...props }, ref) {
+      React.ComponentProps<C> & ComposedTVProps<TVFN> & UnstyledProps
+    >(function ({ className, classNames, unstyled, ...props }, ref) {
       const variants = tvFn(props) as any
 
       const _className = useMemo(
         function () {
           return cn(
-            typeof variants === 'string' ? variants : variants?.[slot ?? '']?.(),
+            unstyled ? '' : typeof variants === 'string' ? variants : variants?.[slot ?? '']?.(),
             classNames?.[slot],
             className
           )
@@ -70,14 +74,14 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
   function withSlot<C extends React.ElementType>(Component: C, slot?: Slot) {
     const Comp = React.forwardRef<
       React.ElementRef<C>,
-      React.ComponentProps<C> & VariantProps<TVFN>
-    >(function ({ className, ...props }, ref) {
+      React.ComponentProps<C> & VariantProps<TVFN> & UnstyledProps
+    >(function ({ className, unstyled, ...props }, ref) {
       const { variants, classNames } = useCtx()
 
       const _className = useMemo(
         function () {
           return cn(
-            slot ? variants?.[slot]?.() : undefined,
+            slot && !unstyled ? variants?.[slot]?.() : undefined,
             slot ? (classNames as any)?.[slot] : undefined,
             className
           )
