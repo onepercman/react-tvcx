@@ -46,7 +46,7 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
   function withRoot<C extends React.ElementType>(Component: C, slot?: Slot) {
     const Comp = React.forwardRef<
       React.ElementRef<C>,
-      React.ComponentProps<C> & ComposedTVProps<TVFN> & UnstyledProps
+      React.ComponentPropsWithoutRef<C> & ComposedTVProps<TVFN> & UnstyledProps
     >(function ({ className, classNames, unstyled, ...props }, ref) {
       const variants = tvFn(props) as any
 
@@ -74,7 +74,7 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
   function withSlot<C extends React.ElementType>(Component: C, slot?: Slot) {
     const Comp = React.forwardRef<
       React.ElementRef<C>,
-      React.ComponentProps<C> & VariantProps<TVFN> & UnstyledProps
+      React.ComponentPropsWithoutRef<C> & VariantProps<TVFN> & UnstyledProps
     >(function ({ className, unstyled, ...props }, ref) {
       const { variants, classNames } = useCtx()
 
