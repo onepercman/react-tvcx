@@ -28,6 +28,11 @@ export type UnstyledProps = {
 export type CtxClassNames<TVFN extends Recipe> =
   ComposedTVProps<TVFN> extends { classNames: any } ? ComposedTVProps<TVFN>['classNames'] : unknown
 
+export interface ComponentConfig<C extends React.ElementType, TVFN extends Recipe> {
+  defaultProps?: Partial<React.ComponentPropsWithoutRef<C> & ComposedTVProps<TVFN> & UnstyledProps>
+  displayName?: string
+}
+
 export function createComponentFactory<TVFN extends Recipe, Slot extends keyof ReturnType<TVFN>>(
   tvFn: TVFN
 ) {
@@ -38,12 +43,17 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
 
   const useCtx = () => React.useContext(Ctx)
 
-  function withRoot<C extends React.ElementType>(Component: C, slot?: Slot) {
+  function withRoot<C extends React.ElementType>(
+    Component: C,
+    slot?: Slot,
+    config?: ComponentConfig<C, TVFN>
+  ) {
     const Comp = React.forwardRef<
       React.ElementRef<C>,
       React.ComponentPropsWithoutRef<C> & ComposedTVProps<TVFN> & UnstyledProps
     >(function ({ className, classNames, unstyled, ...props }, ref) {
-      const variants = tvFn(props) as any
+      const mergedProps = { ...config?.defaultProps, ...props }
+      const variants = tvFn(mergedProps) as any
 
       const _className = React.useMemo(
         function () {
@@ -58,20 +68,26 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
 
       return (
         <Ctx.Provider value={{ variants, classNames: classNames }}>
-          <Component ref={ref} className={_className} {...(props as any)} />
+          <Component ref={ref} className={_className} {...(mergedProps as any)} />
         </Ctx.Provider>
       )
     })
-    Comp.displayName = (Component as any).displayName || (Component as any).name
+    Comp.displayName =
+      config?.displayName || (Component as any).displayName || (Component as any).name
     return Comp
   }
 
-  function withSlot<C extends React.ElementType>(Component: C, slot?: Slot) {
+  function withSlot<C extends React.ElementType>(
+    Component: C,
+    slot?: Slot,
+    config?: ComponentConfig<C, TVFN>
+  ) {
     const Comp = React.forwardRef<
       React.ElementRef<C>,
       React.ComponentPropsWithoutRef<C> & VariantProps<TVFN> & UnstyledProps
     >(function ({ className, unstyled, ...props }, ref) {
       const { variants, classNames } = useCtx()
+      const mergedProps = { ...config?.defaultProps, ...props }
 
       const _className = React.useMemo(
         function () {
@@ -84,10 +100,14 @@ export function createComponentFactory<TVFN extends Recipe, Slot extends keyof R
         [variants, classNames, className, slot, unstyled]
       )
 
-      return <Component ref={ref} className={_className} {...(props as any)} />
+      return <Component ref={ref} className={_className} {...(mergedProps as any)} />
     })
 
-    Comp.displayName = (Component as any).displayName || (Component as any).name || 'Component'
+    Comp.displayName =
+      config?.displayName ||
+      (Component as any).displayName ||
+      (Component as any).name ||
+      'Component'
     return Comp
   }
 
