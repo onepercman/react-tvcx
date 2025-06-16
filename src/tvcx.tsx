@@ -1,7 +1,7 @@
 import React from 'react'
-import { VariantProps } from 'tailwind-variants'
 import { cn } from './cn'
 import { forwardRef } from './forward-ref'
+import { tv, type VariantProps } from 'tailwind-variants'
 
 export interface ComponentMetadata {
   displayName?: string
@@ -31,6 +31,18 @@ export type CtxClassNames<TVFN extends Recipe> =
 export interface ComponentConfig<C extends React.ElementType, TVFN extends Recipe> {
   defaultProps?: Partial<React.ComponentPropsWithoutRef<C> & ComposedTVProps<TVFN> & UnstyledProps>
   displayName?: string
+}
+
+type ComponentSlots<T> = {
+  [K in keyof T as K extends string ? Uncapitalize<K> : never]: any
+}
+
+export const tvcx = <T extends Record<string, any>>(
+  config: Parameters<typeof tv>[0] & {
+    slots?: Partial<ComponentSlots<T>>
+  }
+) => {
+  return tv(config)
 }
 
 export function createComponentFactory<TVFN extends Recipe, Slot extends keyof ReturnType<TVFN>>(
