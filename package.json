@@ -1,6 +1,6 @@
 {
   "name": "react-tvcx",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "author": "onepercman",
   "description": "A library providing functions to help users create a reusable component system for their projects using React, Tailwind CSS, and TypeScript.",
   "main": "dist/index.js",
