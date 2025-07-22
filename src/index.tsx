@@ -3,9 +3,9 @@
  * This file contains all the core functionality for the library
  */
 
-import React from 'react'
 import type { ClassValue } from 'clsx'
 import clsx from 'clsx'
+import React from 'react'
 import { twMerge } from 'tailwind-merge'
 import { tv, type VariantProps } from 'tailwind-variants'
 
@@ -84,7 +84,8 @@ interface NamedExoticComponentWithAs<DefaultComponentType extends As, ComponentP
 export interface ForwardRefExoticComponentWithAs<DefaultComponentType extends As, ComponentProps>
   extends NamedExoticComponentWithAs<DefaultComponentType, ComponentProps> {
   defaultProps?: Partial<PropsWithAs<DefaultComponentType, ComponentProps>>
-  propTypes?: React.WeakValidationMap<PropsWithAs<DefaultComponentType, ComponentProps>>
+  // React 19: WeakValidationMap is not exported, so use any or remove
+  propTypes?: any
 }
 
 /**
