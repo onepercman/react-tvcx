@@ -1,9 +1,10 @@
 {
   "name": "react-tvcx",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "author": "onepercman",
   "description": "A library providing functions to help users create a reusable component system for their projects using React, Tailwind CSS, and TypeScript.",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "publishConfig": {
@@ -58,5 +59,9 @@
     "react": "^18.3.1",
     "tailwind-merge": "^2.5.4",
     "tailwind-variants": "^0.2.1"
+  },
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs"
   }
 }
